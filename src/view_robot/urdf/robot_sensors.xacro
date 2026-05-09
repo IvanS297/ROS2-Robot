@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="inertial_macros.xacro"/>
+
+  <!-- ===== Фанерная прослойка под лидаром ===== -->
+  <joint name="lidar_base_joint" type="fixed">
+    <parent link="top_plate"/>
+    <child link="lidar_base"/>
+    <origin xyz="0 0 0.005" rpy="0 0 0"/>
+  </joint>
+  <link name="lidar_base">
+    <visual>
+      <origin xyz="0 0 0.0025" rpy="0 0 0"/>
+      <geometry><box size="0.075 0.05 0.005"/></geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.0025" rpy="0 0 0"/>
+      <geometry><box size="0.075 0.05 0.005"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.05" x="0.075" y="0.05" z="0.005">
+      <origin xyz="0 0 0.0025" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <!-- ===== RPLidar C1: цилиндр d=43мм h=41.3мм ===== -->
+  <!-- lidar_link помещён на высоту луча лазера (29.88мм от основания),  -->
+  <!-- чтобы фрейм сканирования совпадал с реальным положением луча      -->
+  <joint name="lidar_joint" type="fixed">
+    <parent link="lidar_base"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.02988" rpy="0 0 0"/>
+  </joint>
+  <link name="lidar_link">
+    <visual>
+      <!-- визуал смещён вниз так чтобы основание цилиндра лежало на фанере -->
+      <origin xyz="0 0 ${0.02065 - 0.02988}" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.0215" length="0.0413"/></geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${0.02065 - 0.02988}" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.0215" length="0.0413"/></geometry>
+    </collision>
+    <xacro:inertial_cylinder mass="0.11" length="0.0413" radius="0.0215">
+      <origin xyz="0 0 ${0.02065 - 0.02988}" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
+  </link>
+
+  <!-- ===== Камера ===== -->
+  <!--
+    Положение камеры относительно base_link:
+      x =  0.08 м (смещение вперёд)
+      y =  0.0   м
+      z =  0.183 м
+
+    Камера перевёрнута физически: rpy = (0, pi/2, 0) означает,
+    что оптическая ось (физический Z линзы) смотрит вдоль +X робота,
+    но сама камера повёрнута на 90° по Y.
+
+    camera_link      — физическое положение и ориентация камеры
+    camera_optical_frame — стандартный ROS оптический фрейм:
+                           Z вперёд (вдоль +X робота), X вправо, Y вниз
+  -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <!-- x=0.027: смещение вперёд; z=0.195: высота камеры -->
+    <!-- rpy: камера перевёрнута, повёрнута на pi/2 по Y чтобы смотреть вдоль X -->
+    <origin xyz="0.027 0 0.183" rpy="0 ${pi/2} 0"/>
+  </joint>
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.025 0.09 0.025"/></geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.025 0.09 0.025"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.1" x="0.025" y="0.09" z="0.025">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <!--
+    camera_optical_frame: стандартный оптический фрейм ROS.
+    Поворот относительно camera_link:
+      rpy = (-pi/2, 0, -pi/2)
+    Это стандартный поворот для перевода из "робот-конвенции" в "камера-конвенцию":
+      Camera optical: Z = вперёд, X = вправо, Y = вниз
+  -->
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+  </joint>
+  <link name="camera_optical_frame"/>
+
+</robot>
