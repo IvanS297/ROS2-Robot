@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_robot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="super_robot">
 
   <xacro:include filename="inertial_macros.xacro"/>
   <xacro:include filename="robot_core.xacro"/>
   <xacro:include filename="robot_sensors.xacro"/>
+
+  <xacro:include filename="gz_control.xacro"/>
 
 </robot>

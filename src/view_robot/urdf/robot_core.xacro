@@ -39,6 +39,12 @@
     </xacro:inertial_box>
   </link>
 
+  <gazebo reference="base_plate">
+    <material>
+      Gazebo/White
+    </material>
+  </gazebo>
+
   <!-- ===== Четыре стойки ===== -->
   <xacro:macro name="rod" params="name x y">
     <joint name="${name}_joint" type="fixed">
@@ -62,6 +68,12 @@
     </link>
   </xacro:macro>
 
+  <gazebo reference="rod">
+    <material>
+      Gazebo/Black
+    </material>
+  </gazebo>
+
   <xacro:rod name="rod_front_left"  x=" 0.09" y=" 0.105"/>
   <xacro:rod name="rod_front_right" x=" 0.09" y="-0.105"/>
   <xacro:rod name="rod_rear_left"   x="-0.09" y=" 0.105"/>
@@ -73,6 +85,7 @@
     <child link="left_wheel"/>
     <origin xyz="0 0.095 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
+    <limit effort="200.0" velocity="20.0"/>
   </joint>
   <link name="left_wheel">
     <visual>
@@ -89,11 +102,18 @@
     </xacro:inertial_cylinder>
   </link>
 
+  <gazebo reference="left_wheel">
+    <material>
+      Gazebo/Blue
+    </material>
+  </gazebo>
+
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="right_wheel"/>
     <origin xyz="0 -0.095 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
+    <limit effort="200.0" velocity="20.0"/>
   </joint>
   <link name="right_wheel">
     <visual>
@@ -109,6 +129,12 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </xacro:inertial_cylinder>
   </link>
+
+  <gazebo reference="right_wheel">
+    <material>
+      Gazebo/Blue
+    </material>
+  </gazebo>
 
   <!-- ===== Кастер: было x=-0.09, теперь x=-0.14 ===== -->
   <joint name="caster_wheel_joint" type="fixed">
@@ -131,6 +157,16 @@
     </xacro:inertial_sphere>
   </link>
 
+  <gazebo reference="caster_wheel">
+    <material>
+      Gazebo/Blue
+    </material>
+    <mu1>0.01</mu1>
+    <mu2>0.01</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>
+
   <!-- ===== Средняя плата электроники ===== -->
   <joint name="electronics_plate_joint" type="fixed">
     <parent link="base_plate"/>
@@ -152,6 +188,12 @@
     </xacro:inertial_box>
   </link>
 
+  <gazebo reference="electronic_plate">
+    <material>
+      Gazebo/White
+    </material>
+  </gazebo>
+
   <!-- ===== Верхняя платформа ===== -->
   <joint name="top_plate_joint" type="fixed">
     <parent link="electronics_plate"/>
@@ -172,6 +214,12 @@
       <origin xyz="0 0 0.0025" rpy="0 0 0"/>
     </xacro:inertial_box>
   </link>
+
+  <gazebo reference="top_plate">
+    <material>
+      Gazebo/White
+    </material>
+  </gazebo>
 
   <!-- ===== ros2_control ===== -->
   <ros2_control name="my_robot_hardware" type="system">
