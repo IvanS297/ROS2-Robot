@@ -84,4 +84,4 @@ admin@ROBOT:~$ ros2 node list
 ![TF](./frames.png)
 
 ## Rviz demo:
-![RVIZ](.rviz.png)
+![RVIZ](./rviz.png)
