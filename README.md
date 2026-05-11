@@ -66,7 +66,6 @@ ivan@ivan-HP-EliteBook-745-G6:~/ROS2-Robot$ ros2 topic list
 /scan
 /tf
 /tf_static
-ivan@ivan-HP-EliteBook-745-G6:~/ROS2-Robot$ 
 ```
 Запущенные ноды:
 ```bash
@@ -82,4 +81,4 @@ admin@ROBOT:~$ ros2 node list
 /transform_listener_impl_5cdf62ba9850
 ```
 Трансформации:
-[![TF](.frames_2026-05-11_17.01.48.png)](frames_2026-05-11_17.01.48.pdf)
+[TF](frames.png)
