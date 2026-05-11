@@ -57,9 +57,10 @@ def generate_launch_description():
     contorller_params_file = os.path.join(get_package_share_directory('view_robot'), 'config', 'my_controller.yaml')
 
     controller_manager = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        parameters=[{'robot_description': robot_description_command}, contorller_params_file],
+        package='controller_manager',
+        executable='ros2_control_node',
+        parameters=[robot_description, controller_params_file],  # ← просто словарь
+        output='screen',
     )
 
     delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
