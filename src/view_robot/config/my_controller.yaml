@@ -3,6 +3,7 @@ controller_manager:
     update_rate: 30
     use_sim_time: false
     enable_statistics: false 
+    use_stamped_vel: false
 
     diff_cont:
       type: diff_drive_controller/DiffDriveController
