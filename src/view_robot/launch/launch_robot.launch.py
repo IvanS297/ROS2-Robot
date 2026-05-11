@@ -105,7 +105,7 @@ def generate_launch_description():
         robot_state_publisher,
         joint_state_publisher,
         sllidar_launch,
-        camera_node,
+        #camera_node,
         delayed_controller_manager,
         delayed_diff_drive_spawner,
         delayed_joint_broad_spawner,
