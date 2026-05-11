@@ -5,7 +5,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
-from launch.event import OnProcessStart
+from launch.event_handlers import OnProcessStart
 from launch_ros.actions import Node
 from launch.substitutions import Command
 import xacro
