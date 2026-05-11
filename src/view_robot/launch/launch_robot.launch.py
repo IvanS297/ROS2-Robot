@@ -54,7 +54,7 @@ def generate_launch_description():
     )
 
     robot_description_command = Command(["ros2 param get --hide-type /robot_state_publisher robot_description"]) 
-    contorller_params_file = os.path.join(get_package_share_directory('view_robot'), 'config', 'my_controller.yaml')
+    controller_params_file = os.path.join(get_package_share_directory('view_robot'), 'config', 'my_controller.yaml')
 
     controller_manager = Node(
         package='controller_manager',
