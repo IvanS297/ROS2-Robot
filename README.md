@@ -81,4 +81,4 @@ admin@ROBOT:~$ ros2 node list
 /transform_listener_impl_5cdf62ba9850
 ```
 Трансформации:
-[TF](frames.png)
+[TF](./frames.png)
