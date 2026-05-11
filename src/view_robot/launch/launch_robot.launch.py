@@ -104,7 +104,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         robot_state_publisher,
-        joint_state_publisher,
+        #joint_state_publisher,
         sllidar_launch,
         #camera_node,
         delayed_controller_manager,
