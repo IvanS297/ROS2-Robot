@@ -38,7 +38,7 @@ def generate_launch_description():
             os.path.join(sllidar_dir, 'launch', 'sllidar_c1_launch.py')
         ),
         launch_arguments={
-            'serial_port': '/dev/ttyUSB0',
+            'serial_port': '/dev/ttyUSB1',
             'frame_id': 'lidar_link',
         }.items()
     )
