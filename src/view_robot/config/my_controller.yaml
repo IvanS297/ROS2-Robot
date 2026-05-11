@@ -1,0 +1,71 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 30.0
+    use_sim_time: false
+
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController"
+      
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+#https://control.ros.org/rolling/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html
+test_diff_drive_controller:
+  ros__parameters:
+    publish_rate: 50.0
+    left_wheel_names: ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+
+    wheel_separation: 0.19
+    wheel_radius: 0.0345
+
+    use_stamped_vel: false
+
+    # wheel_separation_multiplier: 1.0
+    # left_wheel_radius_multiplier: 1.0
+    # right_wheel_radius_multiplier: 1.0
+
+    # odom_frame_id: odom
+    base_frame_id: base_link
+    # pose_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    # twist_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    # position_feedback: false
+    # open_loop: true
+    # enable_odom_tf: true
+
+    # cmd_vel_timeout: 0.5 # seconds
+    # publish_limited_velocity: true
+    # velocity_rolling_window_size: 10
+
+    # linear.x.max_velocity: .NAN
+    # linear.x.min_velocity: .NAN
+    # linear.x.max_acceleration: .NAN
+    # linear.x.max_deceleration: .NAN
+    # linear.x.max_acceleration_reverse: .NAN
+    # linear.x.max_deceleration_reverse: .NAN
+    # linear.x.max_jerk: .NAN
+    # linear.x.min_jerk: .NAN
+
+    # angular.z.max_velocity: .NAN
+    # angular.z.min_velocity: .NAN
+    # angular.z.max_acceleration: .NAN
+    # angular.z.max_deceleration: .NAN
+    # angular.z.max_acceleration_reverse: .NAN
+    # angular.z.max_deceleration_reverse: .NAN
+    # angular.z.max_jerk: .NAN
+    # angular.z.min_jerk: .NAN
+
+# joint_state_broadcaster:
+#   ros__parameters:
+#     extra_joints: '{}'
+#     frame_id: base_link
+#     interfaces: '{}'
+#     joints: '{}'
+#     map_interface_to_joint_state:
+#       effort: effort
+#       position: position
+#       velocity: velocity
+#     publish_dynamic_joint_states: false
+#     use_local_topics: false
+#     use_urdf_to_filter: true
