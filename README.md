@@ -85,3 +85,18 @@ admin@ROBOT:~$ ros2 node list
 
 ## Rviz demo:
 ![RVIZ](./rviz.png)
+
+---
+
+## ROS2 Control
+https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html
+
+---
+
+## ROS2 Joint State Broadcaster
+https://control.ros.org/jazzy/doc/ros2_controllers/joint_state_broadcaster/doc/userdoc.html
+
+---
+
+## DiffDriveArduino Ros2 Control Plugin
+https://github.com/joshnewans/diffdrive_arduino
