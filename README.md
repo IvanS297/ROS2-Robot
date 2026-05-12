@@ -38,6 +38,16 @@ ros2 launch view_robot launch_robot.launch.py
 ros2 run teleop_twist_keyboard teleop_twist_keyboard   --ros-args   --remap cmd_vel:=/diff_cont/cmd_vel   -p stamped:=true   -p frame_id:=base_link
 ```
 
+Можно также запустить просто launch для робота и launch для джойстика
+```bash
+# На роботе
+ros2 launch view_robot launch_robot.launch.py
+# В другом теминале другого устройства
+ros2 launch view_robot launch_joy.launch.py
+```
+
+Джойстик сделан на основе `Arduino UNO R3` и `Joystick Shield V1.A`. Достаточно просто залить прошивку на неё.
+
 Струтура топиков в обычном режиме:
 ```bash
 ivan@ivan-HP-EliteBook-745-G6:~/ROS2-Robot$ ros2 topic list
