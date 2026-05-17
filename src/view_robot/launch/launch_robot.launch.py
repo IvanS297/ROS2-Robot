@@ -4,9 +4,10 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.event_handlers import OnProcessStart
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 from launch.substitutions import Command
 import xacro
 
@@ -91,6 +92,19 @@ def generate_launch_description():
         )
     )
 
+    slam_toolbox_launch = PathJoinSubstitution([
+        FindPackageShare('slam_toolbox'), 'launch', 'online_async_launch.py'
+    ])
+
+    slam_toolbox_config_file = PathJoinSubstitution([
+        FindPackageShare('view_robot'), 'config', 'mapper_params_online_async.yaml'
+    ])
+
+    start_slam_toolbox = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(slam_toolbox_launch),
+        launch_arguments={'slam_params_file': slam_toolbox_config_file}.items()
+    )
+
     rviz_config = os.path.join(pkg_path, 'rviz', 'default.rviz')
     rviz = Node(
         package='rviz2',
@@ -109,4 +123,5 @@ def generate_launch_description():
         delayed_controller_manager,
         delayed_diff_drive_spawner,
         delayed_joint_broad_spawner,
+        start_slam_toolbox,
     ])
