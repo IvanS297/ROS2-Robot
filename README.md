@@ -27,7 +27,7 @@ source ~/.bashrc
 ```
 И всё.
 
-### Ощшибки во время работы `RMW_ZENOH`
+### Ошибки во время работы `RMW_ZENOH`
 Если при работе более чем с двумя машинами, происходят такие ошибки:
 ```error
 ERROR rx-1 ThreadId(05) zenoh::net::routing::dispatcher::pubsub: Error treating timestamp for received Data (incoming timestamp from exceeding delta 500ms is rejected: ). Replace timestamp: Some
