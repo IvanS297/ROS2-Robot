@@ -2,6 +2,9 @@
 #define Y_PIN A1
 #define K_PIN 8  // Кнопка джойстика
 
+#define INVERT_X // Инвертиция оси X
+//#define INVERT_Y // Инвертация оси Y
+
 // Кнопки A, B, C, D, E, F
 const byte BUTTON_PINS[] = {2, 3, 4, 5, 6, 7};
 const int NUM_BUTTONS = sizeof(BUTTON_PINS) / sizeof(BUTTON_PINS[0]);
@@ -18,7 +21,15 @@ void loop() {
   // 1. Читаем и нормализуем оси джойстика (-1.0 .. 1.0)
   float x_val = (analogRead(X_PIN) - 344.0) / 344.0;
   float y_val = (analogRead(Y_PIN) - 340.0) / 340.0;
+
+  #ifdef INVERT_X
+  x_val *= -1;
+  #endif
   
+  #ifdef INVERT_Y
+  y_val *= -1;
+  #endif
+
   // 2. Читаем состояния кнопок (0 - нажата, 1 - не нажата)
   int button_states[NUM_BUTTONS + 1];
   button_states[0] = !digitalRead(K_PIN); // Инвертируем, чтобы нажатие было "1"
