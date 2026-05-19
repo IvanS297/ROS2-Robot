@@ -111,10 +111,13 @@ admin@ROBOT:~$ ros2 node list
 /transform_listener_impl_5cdf62ba9850
 ```
 ## Трансформации:
-![TF](./frames.png)
+![TF](images/frames.png)
 
 ## Rviz demo:
-![RVIZ](./rviz.png)
+![RVIZ](images/rviz.png)
+
+## Схемы коммуникациями между нодами
+![Scheme](images/scheme.jpg)
 
 ---
 
