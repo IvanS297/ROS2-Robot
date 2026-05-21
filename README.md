@@ -152,7 +152,137 @@ ros2 run nav2_util lifecycle_bringup amcl # В другом терминале, 
 ---
 
 ## ROS2 Control
-https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html
+сылка на сдокументацию: https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html
+
+Для нормальной работы робот с дифференциальной платформой нужны свои параметры в `ros2 control diff_drive_controller`. У меня они такие:
+```yaml
+controller_manager:
+  ros__parameters:
+    update_rate: 30
+    use_sim_time: false
+    enable_statistics: false 
+    use_stamped_vel: false
+
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+      
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+#https://control.ros.org/rolling/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html
+diff_cont:
+  ros__parameters:
+    publish_rate: 50.0
+    left_wheel_names: ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+
+    wheel_separation: 0.19
+    wheel_radius: 0.0345
+
+    use_stamped_vel: false
+
+    wheel_separation_multiplier: 1.0
+    left_wheel_radius_multiplier: 1.0
+    right_wheel_radius_multiplier: 1.0
+
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    pose_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    twist_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    position_feedback: true
+    open_loop: false
+    enable_odom_tf: true
+
+    cmd_vel_timeout: 0.5 # seconds
+    publish_limited_velocity: false
+    velocity_rolling_window_size: 10
+
+    linear.x.max_velocity: 1.0
+    linear.x.min_velocity: -1.0
+    linear.x.max_acceleration: .NAN
+    linear.x.max_deceleration: .NAN
+    linear.x.max_acceleration_reverse: .NAN
+    linear.x.max_deceleration_reverse: .NAN
+    linear.x.max_jerk: .NAN
+    linear.x.min_jerk: .NAN
+
+    angular.z.max_velocity: 1.0
+    angular.z.min_velocity: -1.0
+    angular.z.max_acceleration: .NAN
+    angular.z.max_deceleration: .NAN
+    angular.z.max_acceleration_reverse: .NAN
+    angular.z.max_deceleration_reverse: .NAN
+    angular.z.max_jerk: .NAN
+    angular.z.min_jerk: .NAN
+
+# joint_state_broadcaster:
+#   ros__parameters:
+#     extra_joints: '{}'
+#     frame_id: base_link
+#     interfaces: '{}'
+#     joints: '{}'
+#     map_interface_to_joint_state:
+#       effort: effort
+#       position: position
+#       velocity: velocity
+#     publish_dynamic_joint_states: false
+#     use_local_topics: false
+#     use_urdf_to_filter: true
+```
+Ковариация ещё не настроена, но это уже не важно. 
+
+Также нужно настроить параметры робота в `ros2_control.xacro`:
+```xml
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+    <ros2_control name="RealRobot" type="system">
+        <hardware>
+            <plugin>diffdrive_arduino/DiffDriveArduinoHardware</plugin>
+            <param name="left_wheel_name">left_wheel_joint</param>
+            <param name="right_wheel_name">right_wheel_joint</param>
+            <param name="loop_rate">30</param>
+            <param name="device">/dev/ttyUSB0</param>
+            <param name="baud_rate">115200</param>
+            <param name="timeout_ms">1000</param>
+            <param name="enc_counts_per_rev">440</param>
+            <param name="pid_p">20</param>
+            <param name="pid_d">25</param>
+            <param name="pid_i">2</param>
+            <param name="pid_o">50</param>
+        </hardware>
+        <joint name="left_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position"/>  <!-- position первым! -->
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="right_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position"/>  <!-- position первым! -->
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+
+</robot>
+```
+
+---
+
+## PID
+
+Коэффициенты PID можно настроить в двух местах:
+ - В `ros2_control.xacro`
+ - В `ArduinoROS.ino`
+
+И там и там есть возможностьнастроить постоянные PID коэффициенты. 
 
 ---
 
