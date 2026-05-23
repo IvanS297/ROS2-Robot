@@ -152,7 +152,7 @@ ros2 run nav2_util lifecycle_bringup amcl # В другом терминале, 
 ---
 
 ## ROS2 Control
-сылка на сдокументацию: https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html
+ссылка на сдокументацию: https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html
 
 Для нормальной работы робот с дифференциальной платформой нужны свои параметры в `ros2 control diff_drive_controller`. У меня они такие:
 ```yaml
