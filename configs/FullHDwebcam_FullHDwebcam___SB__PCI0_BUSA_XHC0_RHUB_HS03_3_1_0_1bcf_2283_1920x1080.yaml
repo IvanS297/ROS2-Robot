@@ -1,0 +1,28 @@
+image_width: 1920
+image_height: 1080
+camera_name: FullHDwebcam_FullHDwebcam___SB__PCI0_BUSA_XHC0_RHUB_HS03_3_1_0_1bcf_2283_1920x1080
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [2282.5954574853045, 0, 977.4002167080547, 0, 2277.8953741149999, 816.97572161399739, 0, 0, 1]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.5171882433864875, 0.53380169498489194, -0.007986843467631493, 0.0001868222154330292, 0]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [2087.5225282741721, 0, 980.49803640538812, 0, 0, 2178.0571958129131, 826.00526775709591, 0, 0, 0, 1, 0]
+binning_x: 0
+binning_y: 0
+roi:
+  x_offset: 0
+  y_offset: 0
+  height: 0
+  width: 0
+  do_rectify: false
