@@ -31,6 +31,9 @@
 #include "rclcpp_lifecycle/state.hpp"
 #include "diffdrive_arduino/visibility_control.h"
 
+#include "sensor_msgs/msg/imu.hpp"
+#include "sensor_msgs/msg/magnetic_field.hpp"
+
 #include "diffdrive_arduino/arduino_comms.hpp"
 #include "diffdrive_arduino/wheel.hpp"
 
@@ -99,6 +102,13 @@ private:
   Config cfg_;
   Wheel wheel_l_;
   Wheel wheel_r_;
+
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr mag_pub_;
+
+  double imu_ax_{0}, imu_ay_{0}, imu_az_{0};
+  double imu_gx_{0}, imu_gy_{0}, imu_gz_{0};
+  double imu_mx_{0}, imu_my_{0}, imu_mz_{0};
 };
 
 }  // namespace diffdrive_arduino

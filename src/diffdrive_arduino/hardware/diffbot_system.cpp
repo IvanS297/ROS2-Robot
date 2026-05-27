@@ -153,6 +153,10 @@ hardware_interface::CallbackReturn DiffDriveArduinoHardware::on_configure(
   comms_.connect(cfg_.device, cfg_.baud_rate, cfg_.timeout_ms);
   RCLCPP_INFO(rclcpp::get_logger("DiffDriveArduinoHardware"), "Successfully configured!");
 
+  auto node = get_node();
+  imu_pub_ = node->create_publisher<sensor_msgs::msg::Imu>("imu/data_raw", 10);
+  mag_pub_ = node->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", 10);
+
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -197,7 +201,7 @@ hardware_interface::CallbackReturn DiffDriveArduinoHardware::on_deactivate(
 }
 
 hardware_interface::return_type DiffDriveArduinoHardware::read(
-  const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
+  const rclcpp::Time & time, const rclcpp::Duration & period)
 {
   if (!comms_.connected())
   {
@@ -215,6 +219,30 @@ hardware_interface::return_type DiffDriveArduinoHardware::read(
   pos_prev = wheel_r_.pos;
   wheel_r_.pos = wheel_r_.calc_enc_angle();
   wheel_r_.vel = (wheel_r_.pos - pos_prev) / delta_seconds;
+
+  comms_.read_imu_values(imu_ax_, imu_ay_, imu_az_,
+                       imu_gx_, imu_gy_, imu_gz_,
+                       imu_mx_, imu_my_, imu_mz_);
+
+  auto imu_msg = sensor_msgs::msg::Imu();
+  imu_msg.header.stamp = time;
+  imu_msg.header.frame_id = "imu_link";
+  imu_msg.linear_acceleration.x = -imu_ax_;
+  imu_msg.linear_acceleration.y = -imu_ay_;
+  imu_msg.linear_acceleration.z = imu_az_;
+  imu_msg.angular_velocity.x = -imu_gx_;
+  imu_msg.angular_velocity.y = -imu_gy_;
+  imu_msg.angular_velocity.z = imu_gz_;
+  imu_msg.orientation_covariance[0] = -1;
+  imu_pub_->publish(imu_msg);
+
+  auto mag_msg = sensor_msgs::msg::MagneticField();
+  mag_msg.header.stamp = time;
+  mag_msg.header.frame_id = "imu_link";
+  mag_msg.magnetic_field.x = -imu_mx_;
+  mag_msg.magnetic_field.y = -imu_my_;
+  mag_msg.magnetic_field.z = imu_mz_;
+  mag_pub_->publish(mag_msg);
 
   return hardware_interface::return_type::OK;
 }

@@ -15,6 +15,8 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
@@ -33,6 +35,7 @@ $<INSTALL_INTERFACE:include/diffdrive_arduino>
 )
 ament_target_dependencies(
   diffdrive_arduino PUBLIC
+  sensor_msgs
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
 

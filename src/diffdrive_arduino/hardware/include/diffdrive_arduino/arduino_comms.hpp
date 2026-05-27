@@ -110,6 +110,51 @@ public:
     send_msg(ss.str());
   }
 
+  void read_imu_values(double &ax, double &ay, double &az,
+                     double &gx, double &gy, double &gz,
+                     double &mx, double &my, double &mz)
+{
+  serial_conn_.FlushIOBuffers();
+  serial_conn_.Write("i\r");
+
+  std::string response = "";
+  try {
+    serial_conn_.ReadLine(response, '\n', 50);
+  }
+  catch (const LibSerial::ReadTimeout&) {
+    std::cerr << "[IMU] Timeout" << std::endl;
+    return;
+  }
+
+  // чистим \r \n пробелы по краям
+  while (!response.empty() &&
+         (response.back() == '\r' || response.back() == '\n'))
+    response.pop_back();
+
+  std::vector<std::string> values;
+  std::istringstream ss(response);
+  std::string token;
+  while (std::getline(ss, token, ' ')) {
+    if (!token.empty()) values.push_back(token);
+  }
+
+  if (values.size() != 9) {
+    std::cerr << "[IMU] Bad response (" << values.size()
+              << " tokens): " << response << std::endl;
+    return;
+  }
+
+  try {
+    ax = std::stod(values[0]); ay = std::stod(values[1]); az = std::stod(values[2]);
+    gx = std::stod(values[3]); gy = std::stod(values[4]); gz = std::stod(values[5]);
+    mx = std::stod(values[6]); my = std::stod(values[7]); mz = std::stod(values[8]);
+  }
+  catch (const std::exception &e) {
+    std::cerr << "[IMU] Parse error: " << e.what()
+              << " | " << response << std::endl;
+  }
+}
+
 private:
     LibSerial::SerialPort serial_conn_;
     int timeout_ms_;

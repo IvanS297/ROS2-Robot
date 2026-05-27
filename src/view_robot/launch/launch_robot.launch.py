@@ -92,6 +92,20 @@ def generate_launch_description():
         )
     )
 
+    ekf_config = os.path.join(
+        get_package_share_directory('view_robot'),
+        'config', 'ekf.yaml'
+    )
+
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[ekf_config],
+        remappings=[('odometry/filtered', 'odometry/filtered')]
+    )
+
     slam_toolbox_launch = PathJoinSubstitution([
         FindPackageShare('slam_toolbox'), 'launch', 'online_async_launch.py'
     ])
@@ -123,5 +137,6 @@ def generate_launch_description():
         delayed_controller_manager,
         delayed_diff_drive_spawner,
         delayed_joint_broad_spawner,
+        ekf_node,
         start_slam_toolbox,
     ])
