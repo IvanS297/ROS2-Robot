@@ -304,4 +304,53 @@ https://control.ros.org/jazzy/doc/ros2_controllers/joint_state_broadcaster/doc/u
 ---
 
 ## DiffDriveArduino Ros2 Control Plugin
-https://github.com/joshnewans/diffdrive_arduino
+Есть [оригинал](https://github.com/joshnewans/diffdrive_arduino), в нём нету imu.  
+[Моя версия](https://github.com/IvanS297/diffdrive_arduino/tree/humble) (форк, есть в папке src/), Я добавил IMU паблишер.  
+Если скачивать мою версию отдельно куда-либо, то необходимо сделать `git chechout humble`.
+
+IMU publisher:
+ - `/imu/data_raw` - данные акселерометра в м/с^2 и гироскопа в rad/s
+ - `/imu/mag` - данные магнетометра в теслах
+
+## IMU Filter Madgwick:
+Задействован фильтр Маджвика для того, чтобы корректировать дрейф IMU.
+Он публикует `/imu/data` - Отфильтрованные данные IMU.  
+Запуск:
+```bash
+ros2 run imu_filter_madgwick imu_filter_madgwick_node --ros-args   -p use_mag:=true   -p publish_tf:=false   -p world_frame:=enu   -p gain:=0.5
+```
+
+## Robot Localization (EKF)
+
+Используется `Extended Kalman Filter` для того, чтобы сделать `sensor fusion` - объеденить колёсную одометрию и IMU, можно также добавить одометрию от `ICP`.
+`ekf.yaml`:
+```yaml
+ekf_filter_node:
+  ros__parameters:
+    frequency: 30.0
+    two_d_mode: true
+    publish_tf: true
+    print_diagnostics: true
+    sensor_timeout: 0.1
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: odom
+
+    odom0: /diff_cont/odom
+    odom0_config: [false, false, false,
+                  false, false, false,
+                  true,  false, false,
+                  false, false, true,
+                  false, false, false]
+
+    imu0: /imu/data
+    imu0_config: [false, false, false,
+              false, false, false,
+              false, false, false,
+              false, false, true,
+              false, false, false]
+    sensor_timeout: 0.1
+    imu0_remove_gravitational_acceleration: true
+```
