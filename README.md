@@ -88,8 +88,12 @@ ivan@ivan-HP-EliteBook-745-G6:~/ROS2-Robot$ ros2 topic list
 /goal_pose
 /image_raw
 /initialpose
+/imu/data
+/imu/data_raw
+/imu/mag
 /joint_broad/transition_event
 /joint_states
+/odometry/filtered
 /parameter_events
 /robot_description
 /rosout
@@ -107,6 +111,9 @@ admin@ROBOT:~$ ros2 node list
 /robot_state_publisher
 /rviz
 /sllidar_node
+/robot_localization_node
+/filter_imu_madgwick_node
+/v4l2_camera_node
 /teleop_twist_keyboard
 /transform_listener_impl_5cdf62ba9850
 ```
