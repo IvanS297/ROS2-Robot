@@ -361,3 +361,10 @@ ekf_filter_node:
     sensor_timeout: 0.1
     imu0_remove_gravitational_acceleration: true
 ```
+
+Статьи на тему, почему важен `sensor fusion`, как его сделать, и сравнения, с ним и без него:
+ - https://docs.nav2.org/setup_guides/odom/setup_robot_localization.html
+ - https://automaticaddison.com/sensor-fusion-and-robot-localization-using-ros-2-jazzy/
+ - https://roverrobotics.com/blogs/guides/fusing-imu-encoders-with-ros-robot-localization
+ - [Справляется ли `Slam Toolbox` с проблемой дрифта колес](https://msadowski.github.io/hands-on-with-slam_toolbox/)
+ - [Почему даже в `Gazebo` `Slam Toolbox` так плохо себя ведет на чистой одометрии с лидаром](https://answers.ros.org/question/373485/)
