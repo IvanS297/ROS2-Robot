@@ -104,19 +104,31 @@ ivan@ivan-HP-EliteBook-745-G6:~/ROS2-Robot$ ros2 topic list
 Запущенные ноды:
 ```bash
 admin@ROBOT:~$ ros2 node list
+/SlamToolboxPlugin
+/SlamToolboxPlugin
+/SlamToolboxPlugin
+/SlamToolboxStateUpdateNode
+/SlamToolboxStateUpdateNode
+/SlamToolboxStateUpdateNode
 /controller_manager
 /diff_cont
+/ekf_filter_node
+/frontier_exploration
+/imu_filter_madgwick
 /joint_broad
+/launch_ros_2821
+/pure_persuit
 /realrobot
 /robot_state_publisher
 /rviz
+/slam_toolbox
 /sllidar_node
-/robot_localization_node
-/filter_imu_madgwick_node
-/v4l2_camera_node
-/teleop_twist_keyboard
-/transform_listener_impl_5cdf62ba9850
+/transform_listener_impl_556e14ce7be0
+/transform_listener_impl_aaaacf394d50
+/transform_listener_impl_aaab03c8fb20
+/v4l2_camera
 ```
+
 ## Трансформации:
 ![TF](images/frames.png)
 
