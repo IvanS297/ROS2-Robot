@@ -1,4 +1,4 @@
-# ROS2-Robot
+# ROS2-Robot. Робот, который может исследовать пространство, выполнять задания на основе карты, собранной им же. 
 
 ---
 
@@ -367,8 +367,7 @@ ros2 run imu_filter_madgwick imu_filter_madgwick_node --ros-args   -p use_mag:=t
 
 Используется `Extended Kalman Filter` для того, чтобы сделать `sensor fusion` - объеденить колёсную одометрию и IMU, можно также добавить одометрию от `ICP`.
 `ekf.yaml`:
-```yaml
-ekf_filter_node:
+```yamlekf_filter_node:
   ros__parameters:
     frequency: 30.0
     two_d_mode: true
@@ -382,20 +381,32 @@ ekf_filter_node:
     world_frame: odom
 
     odom0: /diff_cont/odom
-    odom0_config: [false, false, false,
+    odom0_config: [false, false, false, # от колесной одометрии только vx и vyaw
                   false, false, false,
                   true,  false, false,
                   false, false, true,
                   false, false, false]
 
     imu0: /imu/data
-    imu0_config: [false, false, false,
+    imu0_config: [false, false, false, # от imu только vyaw
               false, false, false,
               false, false, false,
               false, false, true,
               false, false, false]
     sensor_timeout: 0.1
+
+    odom0_queue_size: 10
+    imu0_queue_size: 10
     imu0_remove_gravitational_acceleration: true
+
+    #odom1: /odom_rf2o
+    #odom1_config: [false, false, false,
+    #               false, false, false,
+    #               true,  false, false,   # Vx
+    #               false, false, true,   # Vyaw — опционально true
+    #               false, false, false]
+    #odom1_differential: false   # т.к. фьюзишь скорость, не позу
+
 ```
 
 Статьи на тему, почему важен `sensor fusion`, как его сделать, и сравнения, с ним и без него:
@@ -404,3 +415,17 @@ ekf_filter_node:
  - https://roverrobotics.com/blogs/guides/fusing-imu-encoders-with-ros-robot-localization
  - [Справляется ли `Slam Toolbox` с проблемой дрифта колес](https://msadowski.github.io/hands-on-with-slam_toolbox/)
  - [Почему даже в `Gazebo` `Slam Toolbox` так плохо себя ведет на чистой одометрии с лидаром](https://answers.ros.org/question/373485/)
+
+# Ковариации в сообщениях
+Чтобы корректно фьюзить одометрии (колесная, визуальная, лидарная и т.д.) и imu нужны матрицы ковариаций для IMU и для одометрии:
+`angular_velocity_covariance` - нужно заполнить эту матрицу [3][3] диагональю квадрата дисперсии:
+```cpp
+imu_msg.angular_velocity_covariance = {
+ 0.001, 0.0,   0.0,
+ 0.0,   0.001, 0.0,
+ 0.0,   0.0,   0.001
+};
+
+```
+У меня в покое гироскоп шумит в диапозоне `±0.005 рад/с`, то есть `σ≈0.003`, дисперсия `≈1e-5`. Так что реалистично что-то вроде `0.0001–0.001`.
+Для одометрии нормальная матрица с диагональю `0.001`.
