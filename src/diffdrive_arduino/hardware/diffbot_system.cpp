@@ -225,7 +225,7 @@ hardware_interface::return_type DiffDriveArduinoHardware::read(
                        imu_mx_, imu_my_, imu_mz_);
 
   auto imu_msg = sensor_msgs::msg::Imu();
-  imu_msg.header.stamp = time;
+  imu_msg.header.stamp = get_node()->get_clock()->now();
   imu_msg.header.frame_id = "imu_link";
   imu_msg.linear_acceleration.x = -imu_ax_;
   imu_msg.linear_acceleration.y = -imu_ay_;
@@ -234,6 +234,19 @@ hardware_interface::return_type DiffDriveArduinoHardware::read(
   imu_msg.angular_velocity.y = -imu_gy_;
   imu_msg.angular_velocity.z = imu_gz_;
   imu_msg.orientation_covariance[0] = -1;
+  
+  imu_msg.angular_velocity_covariance = {
+    0.001, 0.0,   0.0,
+    0.0,   0.001, 0.0,
+    0.0,   0.0,   0.001
+  };
+
+  imu_msg.linear_acceleration_covariance = {
+    0.0001, 0.0,    0.0,
+    0.0,    0.0001, 0.0,
+    0.0,    0.0,    0.0001
+  };
+
   imu_pub_->publish(imu_msg);
 
   auto mag_msg = sensor_msgs::msg::MagneticField();

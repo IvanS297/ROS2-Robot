@@ -20,6 +20,7 @@ def generate_launch_description():
     robot_description_config = xacro.process_file(xacro_file)
     robot_description = {'robot_description': robot_description_config.toxml()}
     sllidar_dir = get_package_share_directory('sllidar_ros2')
+    rf2o_dir = get_package_share_directory('rf2o_laser_odometry')
 
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -42,6 +43,10 @@ def generate_launch_description():
             'serial_port': '/dev/ttyUSB1',
             'frame_id': 'lidar_link',
         }.items()
+    )
+
+    rf2o = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(rf2o_dir, 'launch', 'rf2o_laser_odometry.launch.py')),
     )
 
     camera_node = Node(
@@ -119,16 +124,16 @@ def generate_launch_description():
         launch_arguments={'slam_params_file': slam_toolbox_config_file}.items()
     )
 
-    rviz_config = os.path.join(pkg_path, 'rviz', 'default.rviz')
-    rviz = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        arguments=['-d', rviz_config] if os.path.exists(rviz_config) else [],
-        parameters=[],
-        output='screen'
+    madgwick = Node(
+        package='imu_filter_madgwick',
+        executable='imu_filter_madgwick_node',
+        name='imu_filter_madgwick',
+        output='screen',
+        parameters=[{
+            'use_mag': True,
+            'publish_tf': False
+        }]
     )
-
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         robot_state_publisher,
@@ -137,6 +142,8 @@ def generate_launch_description():
         delayed_controller_manager,
         delayed_diff_drive_spawner,
         delayed_joint_broad_spawner,
+        madgwick,
+        #rf2o,
         ekf_node,
-        start_slam_toolbox,
+        #start_slam_toolbox,
     ])
