@@ -192,7 +192,7 @@ ros2 launch slam_toolbox online_async_launch.py slam_params_file:=~/ros2_ws/src/
 
 Есть конфиг файл для настройки:
 
-Frontier Exploration
+### Frontier Exploration и исследование пространства
 
 | Параметр | Тип данных | Значение по умолчанию | Описание |
 | :--- | :--- | :--- | :--- |
@@ -206,9 +206,7 @@ Frontier Exploration
 | **exploration_rate** | `Float` | `2.0` | Частота цикла исследования в Гц. 2 Гц обычно достаточно, так как BFS — тяжелая операция. |
 
 
-Pure Persuit
-
-### Параметры конфигурации: Pure Pursuit и объезд препятствий
+### Pure Pursuit и объезд препятствий
 
 | Параметр | Тип данных | Значение по умолчанию | Описание |
 | :--- | :--- | :--- | :--- |
