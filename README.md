@@ -191,7 +191,7 @@ ros2 launch slam_toolbox online_async_launch.py slam_params_file:=~/ros2_ws/src/
 `Frontier Exploration` - знаит исследовать карту пространства по неисвезтным частям. Карты типа `Occuancy Grid` в местах, где что-то есть ставится 100, где не занято - 0, где неизвестно - -1. Frontier - это и есть линия неиззвестной области. Пакет `frontier_exploration` ищет по карте в еальном времени такие frontier'ы и строит к ним маршрут. Затем нода `pure_persuit` получает этот путь и посылает команы скорости, которые принимает ROS2 Control, а потом и ESP с моторами. Процесс будет идти, пока не вся карта не будет исследована до конца.
 
 Есть конфиг файл для настройки:
-```yaml
+
 Frontier Exploration
 
 | Параметр | Тип данных | Значение по умолчанию | Описание |
@@ -231,9 +231,6 @@ Pure Persuit
 | **odom_topic** | `String` | `/odometry/filtered` | Топик одометрии (EKF). |
 | **map_topic** | `String` | `/map` | Топик карты. |
 | **allow_backwards** | `Boolean` | `False` | Разрешить движение задом наперед, если так легче достигнуть цели. |
-
-    
-```
 
 
 ![frontier_exploration](images/frontier_explporation.png)
