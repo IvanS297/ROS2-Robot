@@ -27,7 +27,7 @@ def generate_launch_description():
         namespace='',
         output='screen',
         parameters=[
-            {'yaml_filename': '/home/admin/ros2_ws/maps/map.yaml'},
+            {'yaml_filename': '/home/admin/ros2_ws/maps/map1.yaml'},
             #params_file
         ]
     )

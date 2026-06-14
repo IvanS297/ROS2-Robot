@@ -143,7 +143,7 @@ def generate_launch_description():
         delayed_diff_drive_spawner,
         delayed_joint_broad_spawner,
         madgwick,
-        #rf2o,
+        rf2o,
         ekf_node,
         #start_slam_toolbox,
     ])

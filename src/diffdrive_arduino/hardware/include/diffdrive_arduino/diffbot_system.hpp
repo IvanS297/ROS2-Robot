@@ -37,6 +37,8 @@
 #include "diffdrive_arduino/arduino_comms.hpp"
 #include "diffdrive_arduino/wheel.hpp"
 
+#include "std_srvs/srv/set_bool.hpp"
+
 namespace diffdrive_arduino
 {
 class DiffDriveArduinoHardware : public hardware_interface::SystemInterface
@@ -96,7 +98,13 @@ public:
   hardware_interface::return_type write(
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
+  DIFFDRIVE_ARDUINO_PUBLIC
+  void reset_odom_service(
+    const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+    std::shared_ptr<std_srvs::srv::SetBool::Response> response);
+  
 private:
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_server_;
 
   ArduinoComms comms_;
   Config cfg_;

@@ -11,7 +11,7 @@ slam_toolbox:
 
     # ROS Parameters
     odom_frame: odom
-    #odom_topic: /odometry/filtered
+    odom_topic: /odometry/filtered
     map_frame: map
     base_frame: base_footprint
     scan_topic: /scan

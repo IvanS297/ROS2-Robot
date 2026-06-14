@@ -96,6 +96,11 @@ public:
     val_1 = std::atoi(token_1.c_str());
     val_2 = std::atoi(token_2.c_str());
   }
+  std::string reset_encoder_values() {
+    std::string response = send_msg("r\r");
+    return response;
+  }
+
   void set_motor_values(int val_1, int val_2)
   {
     std::stringstream ss;

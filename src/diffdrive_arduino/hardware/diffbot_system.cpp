@@ -186,6 +186,10 @@ hardware_interface::CallbackReturn DiffDriveArduinoHardware::on_activate(
   {
     comms_.set_pid_values(cfg_.pid_p,cfg_.pid_d,cfg_.pid_i,cfg_.pid_o);
   }
+
+  auto node = get_node();
+  service_server_ = node->create_service<std_srvs::srv::SetBool>("~/reset_odom", std::bind(&DiffDriveArduinoHardware::reset_odom_service, this, std::placeholders::_1, std::placeholders::_2));
+
   RCLCPP_INFO(rclcpp::get_logger("DiffDriveArduinoHardware"), "Successfully activated!");
 
   return hardware_interface::CallbackReturn::SUCCESS;
@@ -225,7 +229,7 @@ hardware_interface::return_type DiffDriveArduinoHardware::read(
                        imu_mx_, imu_my_, imu_mz_);
 
   auto imu_msg = sensor_msgs::msg::Imu();
-  imu_msg.header.stamp = get_node()->get_clock()->now();
+  imu_msg.header.stamp = time;
   imu_msg.header.frame_id = "imu_link";
   imu_msg.linear_acceleration.x = -imu_ax_;
   imu_msg.linear_acceleration.y = -imu_ay_;
@@ -234,19 +238,6 @@ hardware_interface::return_type DiffDriveArduinoHardware::read(
   imu_msg.angular_velocity.y = -imu_gy_;
   imu_msg.angular_velocity.z = imu_gz_;
   imu_msg.orientation_covariance[0] = -1;
-  
-  imu_msg.angular_velocity_covariance = {
-    0.001, 0.0,   0.0,
-    0.0,   0.001, 0.0,
-    0.0,   0.0,   0.001
-  };
-
-  imu_msg.linear_acceleration_covariance = {
-    0.0001, 0.0,    0.0,
-    0.0,    0.0001, 0.0,
-    0.0,    0.0,    0.0001
-  };
-
   imu_pub_->publish(imu_msg);
 
   auto mag_msg = sensor_msgs::msg::MagneticField();
@@ -273,6 +264,20 @@ hardware_interface::return_type diffdrive_arduino ::DiffDriveArduinoHardware::wr
   comms_.set_motor_values(motor_l_counts_per_loop, motor_r_counts_per_loop);
   return hardware_interface::return_type::OK;
 }
+
+void DiffDriveArduinoHardware::reset_odom_service(const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+  std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+    std::string res = comms_.reset_encoder_values();
+    auto node = get_node();
+    if (res == "OK") {
+      response->success = true;
+      response->message = "Reset encoder values successfuly";
+      RCLCPP_WARN(node->get_logger(), "%s! PLEASE SHUTDOWN THIS ROS2 SESSION AND LAUNCH THIS LAUNCH FILE AGAIN!", response->message.c_str());
+    }
+    else {
+      RCLCPP_ERROR(node->get_logger(), "ERROR TO RESET ODOMETRY VALUES.");
+    }
+  }
 
 }  // namespace diffdrive_arduino
 
