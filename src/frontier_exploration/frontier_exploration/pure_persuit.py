@@ -38,6 +38,9 @@ class PurePursuit(Node):
         self.declare_parameter('fov_deadzone', 80)
         self.declare_parameter('small_fov', 300)
         self.declare_parameter('small_fov_distance', 10)
+        self.declare_parameter('odom_topic', '/odom')
+        self.declare_parameter('map_topic', '/map')
+        self.declare_parameter('allow_backwards', True)
 
         self.is_in_debug_mode                          = bool(self.get_parameter('debug').value)
         self.LOOKAHEAD_DISTANCE                        = self.get_parameter('lookahead_distance').value
@@ -55,20 +58,21 @@ class PurePursuit(Node):
         self.FOV_DEADZONE                              = self.get_parameter('fov_deadzone').value
         self.SMALL_FOV                                 = self.get_parameter('small_fov').value
         self.SMALL_FOV_DISTANCE                        = self.get_parameter('small_fov_distance').value
-        self.cmd_vel = self.create_publisher(TwistStamped, "/cmd_vel", 10)
+        self.allow_backwards                           = self.get_parameter('allow_backwards').value
+        self.cmd_vel = self.create_publisher(TwistStamped, "/diff_cont/cmd_vel", 10)
         self.lookahead_pub = self.create_publisher(PointStamped, "/pure_pursuit/lookahead", 10)
+        self.odom_topic = self.get_parameter('odom_topic').value
+        self.map_topic = self.get_parameter('map_topic').value
 
         if self.is_in_debug_mode:
-            self.fov_cells_pub = self.create_publisher(
-                GridCells, "/pure_pursuit/fov_cells", 100
-            )
-            self.close_wall_cells_pub = self.create_publisher(
-                GridCells, "/pure_pursuit/close_wall_cells", 100
-            )
+            self.fov_cells_pub = self.create_publisher(GridCells, "/pure_pursuit/fov_cells", 100)
+            self.close_wall_cells_pub = self.create_publisher(GridCells, "/pure_pursuit/close_wall_cells", 100)
 
         # Subscribers
-        self.create_subscription(Odometry, "/odom", self.update_odometry, 10)
-        self.create_subscription(OccupancyGrid, "/map", self.update_map, 10)
+        #self.create_subscription(Odometry, "/odom", self.update_odometry, 10)
+        self.create_subscription(Odometry, self.odom_topic, self.update_odometry, 10)
+        #self.create_subscription(OccupancyGrid, "/map", self.update_map, 10)
+        self.create_subscription(OccupancyGrid, self.map_topic, self.update_map, 10)
         self.create_subscription(Path, "/pure_pursuit/path", self.update_path, 10)
         self.create_subscription(Bool, "/pure_pursuit/enabled", self.update_enabled, 10)
 
@@ -321,7 +325,10 @@ class PurePursuit(Node):
                 self.alpha += 2 * np.pi
 
             # If the lookahead is behind the robot, follow the path backwards
-            self.reversed = abs(self.alpha) > np.pi / 2
+            if self.allow_backwards:
+                self.reversed = abs(self.alpha) > np.pi / 2
+            else:
+                self.reversed = False
 
             # Calculate the lookahead distance and center of curvature
             lookahead_distance = PurePursuit.distance(x, y, lookahead.x, lookahead.y)
