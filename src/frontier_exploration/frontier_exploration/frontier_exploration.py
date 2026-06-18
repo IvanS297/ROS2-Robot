@@ -36,6 +36,11 @@ class FrontierExploration(Node):
         self.declare_parameter('a_star_cost_weight', 10.0)
         self.declare_parameter('frontier_size_cost_weight', 1.0)
         self.declare_parameter('exploration_rate', 2.0)
+        self.declare_parameter('use_led_strip', False)
+        self.declare_parameter('padding_pixels', 3)
+        self.use_led_strip = self.get_parameter('use_led_strip').value
+        self.padding_pixels = self.get_parameter('padding_pixels').value
+
 
         self.NUM_EXPLORE_FAILS_BEFORE_FINISH = self.get_parameter('num_explore_fails_before_finish').value
         self.MIN_MAP_CELLS                   = self.get_parameter('min_map_cells').value
@@ -54,6 +59,14 @@ class FrontierExploration(Node):
             self.goal_pub = self.create_publisher(GridCells, '/frontier_exploration/goal', 10)
             self.cspace_pub = self.create_publisher(GridCells, '/cspace', 10)
             self.cost_map_pub = self.create_publisher(OccupancyGrid, '/cost_map', 10)
+            if self.use_led_strip:
+                from diffdrive_arduino_interfaces.srv import Rgb
+                self.strip_client = self.create_client(Rgb, "/realrobot/set_strip_color")
+                req = Rgb.Request()
+                req.data[0] = 0
+                req.data[1] = 0
+                req.data[2] = 255
+                self.strip_client.call_async(req)
 
         # Subscribers
         self.create_subscription(Odometry, '/odom', self.update_odometry, 10)
@@ -171,6 +184,13 @@ class FrontierExploration(Node):
             self.get_logger().info("Done exploring!")
             self.save_map()
             self.get_logger().info("Saved map")
+            if self.use_led_strip:
+                from diffdrive_arduino_interfaces.srv import Rgb
+                req = Rgb.Request()
+                req.data[0] = 0
+                req.data[1] = 255
+                req.data[2] = 0
+                self.strip_client.call_async(req)
             self.is_finished_exploring = True
 
     def explore_frontier(self, frontier_list: FrontierList):
@@ -193,9 +213,9 @@ class FrontierExploration(Node):
         FRONTIER_SIZE_COST_WEIGHT = self.FRONTIER_SIZE_COST_WEIGHT
 
         # Calculate the C-space
-        cspace, cspace_cells = PathPlanner.calc_cspace(self.map, self.is_in_debug_mode)
-        # if cspace_cells is not None:
-        #     self.cspace_pub.publish(cspace_cells)
+        cspace, cspace_cells = PathPlanner.calc_cspace(self.map, self.is_in_debug_mode, self.padding_pixels)
+        if cspace_cells is not None:
+            self.cspace_pub.publish(cspace_cells)
 
         # Calculate the cost map
         cost_map = PathPlanner.calc_cost_map(self.map)
@@ -332,6 +352,16 @@ class FrontierExploration(Node):
 
             self.explore_frontier(frontier_list)
             rate.sleep()
+    
+    @staticmethod
+    def destroy(self):
+        from diffdrive_arduino_interfaces.srv import Rgb
+        req = Rgb.Request()
+        req.data[0] = 0
+        req.data[1] = 0
+        req.data[2] = 0
+        self.strip_client.call_async(req)
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -339,6 +369,7 @@ def main(args=None):
     thread = threading.Thread(target=node.run, daemon=True)
     thread.start()
     rclpy.spin(node)
+    node.destroy()
     node.destroy_node()
     rclpy.shutdown()
 

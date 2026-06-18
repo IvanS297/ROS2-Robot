@@ -38,6 +38,7 @@
 #include "diffdrive_arduino/wheel.hpp"
 
 #include "std_srvs/srv/set_bool.hpp"
+#include "diffdrive_arduino_interfaces/srv/rgb.hpp"
 
 namespace diffdrive_arduino
 {
@@ -102,9 +103,15 @@ public:
   void reset_odom_service(
     const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
     std::shared_ptr<std_srvs::srv::SetBool::Response> response);
+
+  DIFFDRIVE_ARDUINO_PUBLIC
+  void set_strip_color_service(
+    const std::shared_ptr<diffdrive_arduino_interfaces::srv::Rgb::Request> request,
+    std::shared_ptr<diffdrive_arduino_interfaces::srv::Rgb::Response> response);
   
 private:
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_server_;
+  rclcpp::Service<diffdrive_arduino_interfaces::srv::Rgb>::SharedPtr service_server_rgb_;
 
   ArduinoComms comms_;
   Config cfg_;

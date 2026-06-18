@@ -1,0 +1,4 @@
+uint8[3] data
+---
+bool success
+string message

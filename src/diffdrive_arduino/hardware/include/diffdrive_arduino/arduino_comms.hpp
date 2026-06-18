@@ -96,9 +96,18 @@ public:
     val_1 = std::atoi(token_1.c_str());
     val_2 = std::atoi(token_2.c_str());
   }
+
   std::string reset_encoder_values() {
     std::string response = send_msg("r\r");
     return response;
+  }
+
+  void set_strip_color(int r, int g, int b) {
+    std::stringstream ss;
+    ss << "l " << r << " " << g << " " << b << "\r";
+    //std::cout << r << " " << g << " " << b << std::endl;
+    send_msg(ss.str());
+    //send_msg("l 255 255 255\r");
   }
 
   void set_motor_values(int val_1, int val_2)

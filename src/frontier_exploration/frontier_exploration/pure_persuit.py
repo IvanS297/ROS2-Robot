@@ -41,6 +41,7 @@ class PurePursuit(Node):
         self.declare_parameter('odom_topic', '/odom')
         self.declare_parameter('map_topic', '/map')
         self.declare_parameter('allow_backwards', True)
+        self.declare_parameter('use_led_strip', False)
 
         self.is_in_debug_mode                          = bool(self.get_parameter('debug').value)
         self.LOOKAHEAD_DISTANCE                        = self.get_parameter('lookahead_distance').value
@@ -63,10 +64,14 @@ class PurePursuit(Node):
         self.lookahead_pub = self.create_publisher(PointStamped, "/pure_pursuit/lookahead", 10)
         self.odom_topic = self.get_parameter('odom_topic').value
         self.map_topic = self.get_parameter('map_topic').value
+        self.use_led_strip = self.get_parameter('use_led_strip').value
 
         if self.is_in_debug_mode:
             self.fov_cells_pub = self.create_publisher(GridCells, "/pure_pursuit/fov_cells", 100)
             self.close_wall_cells_pub = self.create_publisher(GridCells, "/pure_pursuit/close_wall_cells", 100)
+            if self.use_led_strip:
+                from diffdrive_arduino_interfaces.srv import Rgb
+                self.strip_client = self.create_client(Rgb, "/realrobot/set_strip_color")
 
         # Subscribers
         #self.create_subscription(Odometry, "/odom", self.update_odometry, 10)

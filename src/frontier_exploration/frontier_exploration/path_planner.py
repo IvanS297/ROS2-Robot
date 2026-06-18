@@ -226,7 +226,7 @@ class PathPlanner:
 
     @staticmethod
     def calc_cspace(
-        mapdata: OccupancyGrid, include_cells: bool
+        mapdata: OccupancyGrid, include_cells: bool, padding: int = 3
     ) -> "tuple[OccupancyGrid, Union[GridCells, None]]":
         """
         Calculates the C-Space, i.e., makes the obstacles in the map thicker.
@@ -234,7 +234,7 @@ class PathPlanner:
         :param mapdata [OccupancyGrid] The map data.
         :return        [OccupancyGrid] The C-Space.
         """
-        PADDING = 5  # The number of cells around the obstacles
+        PADDING = padding  # The number of cells around the obstacles
  
         # Create numpy grid from mapdata
         width = mapdata.info.width

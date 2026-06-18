@@ -3,11 +3,12 @@
 <package format="3">
   <name>diffdrive_arduino</name>
   <version>0.0.0</version>
-  <description>Demo package of `ros2_control` hardware for DiffBot.</description>
+  <description>ros2_control plugin.</description>
 
   <maintainer email="denis.stogl@stoglrobotics.de">Dr.-Ing. Denis Štogl</maintainer>
   <maintainer email="bence.magyar.robotics@gmail.com">Bence Magyar</maintainer>
   <maintainer email="christoph.froehlich@ait.ac.at">Christoph Froehlich</maintainer>
+  <maintainer email="ivan.ser202@gmail.com">Ivan Serdyuk</maintainer>
 
   <author email="denis.stogl@stoglrobotics.de">Dr.-Ing. Denis Štogl</author>
 
@@ -22,7 +23,11 @@
   <depend>libserial-dev</depend>
   <depend>sensor_msgs</depend>
   <depend>std_srvs</depend>
+  <depend>diffdrive_arduino_interfaces</depend>
 
+  <build_depend>rosidl_default_generators</build_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
 
   <exec_depend>ros2_controllers_test_nodes</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
@@ -31,6 +36,7 @@
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
+  
   <!--exec_depend>std_srvs</exec_depend-->
 
   <test_depend>ament_cmake_gtest</test_depend>

@@ -189,6 +189,7 @@ hardware_interface::CallbackReturn DiffDriveArduinoHardware::on_activate(
 
   auto node = get_node();
   service_server_ = node->create_service<std_srvs::srv::SetBool>("~/reset_odom", std::bind(&DiffDriveArduinoHardware::reset_odom_service, this, std::placeholders::_1, std::placeholders::_2));
+  service_server_rgb_ = node->create_service<diffdrive_arduino_interfaces::srv::Rgb>("~/set_strip_color", std::bind(&DiffDriveArduinoHardware::set_strip_color_service, this, std::placeholders::_1, std::placeholders::_2));
 
   RCLCPP_INFO(rclcpp::get_logger("DiffDriveArduinoHardware"), "Successfully activated!");
 
@@ -278,6 +279,15 @@ void DiffDriveArduinoHardware::reset_odom_service(const std::shared_ptr<std_srvs
       RCLCPP_ERROR(node->get_logger(), "ERROR TO RESET ODOMETRY VALUES.");
     }
   }
+
+void DiffDriveArduinoHardware::set_strip_color_service(const std::shared_ptr<diffdrive_arduino_interfaces::srv::Rgb::Request> request,
+  std::shared_ptr<diffdrive_arduino_interfaces::srv::Rgb::Response> response) {
+    comms_.set_strip_color(request->data[0], request->data[1], request->data[2]);
+    auto node = get_node();
+    response->success = true;
+    response->message = "color changed";
+    RCLCPP_WARN(node->get_logger(), "'r %d g %d b %d'", request->data[0], request->data[1], request->data[2]);
+}
 
 }  // namespace diffdrive_arduino
 
