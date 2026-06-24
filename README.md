@@ -235,6 +235,16 @@ ros2 launch slam_toolbox online_async_launch.py slam_params_file:=~/ros2_ws/src/
 
 ![frontier_exploration](images/frontier_explporation.png)
 
+### Следование целевой позиции
+Вы можете задать целевую позицию через `Rviz` при помощи инструмента `2D Goal Pose`, через топик `/goal_pose` из под другой ноды или же через терминал. Тип `PoseStamped`.
+#### Запуск:
+```bash
+ros2 launch frontier_exploration launch_following.launch.py
+```
+
+![goal](images/goal.png)
+![goal](images/path_to_goal.png)
+
 ### Публикация готовой карты
 Чтобы начать пуликовать готовую карту для `AMCL` и других нод для локализации, нужно вызвать следующие команды
 ```bash
