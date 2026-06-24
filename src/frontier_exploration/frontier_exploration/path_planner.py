@@ -83,23 +83,25 @@ class PathPlanner:
         :return        [[PoseStamped]] The path as a list of PoseStamped (world coordinates).
         """
         poses = []
-        for i in range(len(path) - 1):
-            cell = path[i]
-            next_cell = path[i + 1]
-            if i != len(path) - 1:
-                angle_to_next = math.atan2(
-                    next_cell[1] - cell[1], next_cell[0] - cell[0]
+        # пофикшенный баг: если задать цель, за пределами карты, то нода крашится
+        if path is not None:
+            for i in range(len(path) - 1):
+                cell = path[i]
+                next_cell = path[i + 1]
+                if i != len(path) - 1:
+                    angle_to_next = math.atan2(
+                        next_cell[1] - cell[1], next_cell[0] - cell[0]
+                    )
+                q = quaternion_from_euler(0, 0, angle_to_next)
+                poses.append(
+                    PoseStamped(
+                        header=Header(frame_id="map"),
+                        pose=Pose(
+                            position=PathPlanner.grid_to_world(mapdata, cell),
+                            orientation=Quaternion(x=q[0], y=q[1], z=q[2], w=q[3]),
+                        ),
+                    )
                 )
-            q = quaternion_from_euler(0, 0, angle_to_next)
-            poses.append(
-                PoseStamped(
-                    header=Header(frame_id="map"),
-                    pose=Pose(
-                        position=PathPlanner.grid_to_world(mapdata, cell),
-                        orientation=Quaternion(x=q[0], y=q[1], z=q[2], w=q[3]),
-                    ),
-                )
-            )
         return poses
 
     @staticmethod

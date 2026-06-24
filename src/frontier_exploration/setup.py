@@ -24,6 +24,7 @@ setup(
         'console_scripts': [
             "frontier_exploration=frontier_exploration.frontier_exploration:main",
             "pure_persuit=frontier_exploration.pure_persuit:main",
+            "follow=frontier_exploration.follow:main"
         ],
     },
 )
